@@ -1,0 +1,16 @@
+.DS_Store
+AGENTS.md
+.env
+.env.*
+*.log
+node_modules/
+dist/
+build/
+
+# Raw research data is intentionally kept out of the portfolio repo.
+*.csv
+*.tsv
+*.xlsx
+data/
+datasets/
+sourdough_failproof_dataset.*

@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Crumb, Failproof sourdough calculator by Vivid Sourdough</title>
+  <meta name="description" content="An intelligent calculator that designs your sourdough bake around your time, kitchen, and skill, based on data from 207 recipes." />
+  <link rel="preconnect" href="https://api.fontshare.com" />
+  <link href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700,900&f[]=fraunces@400,500,700,900&f[]=jetbrains-mono@400,500&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js" defer></script>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='14' fill='%23c5793a'/%3E%3Cpath d='M9 14 Q16 8 23 14 M9 18 Q16 12 23 18' stroke='%23fef9f0' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="#" aria-label="Crumb home">
+      <svg class="logo" viewBox="0 0 40 40" aria-hidden="true">
+        <circle cx="20" cy="20" r="18" fill="currentColor" opacity="0.92"/>
+        <path d="M10 17 Q20 9 30 17 M10 23 Q20 15 30 23" stroke="var(--color-bg)" stroke-width="1.8" fill="none" stroke-linecap="round" opacity="0.9"/>
+        <circle cx="14" cy="14" r="0.9" fill="var(--color-bg)" opacity="0.7"/>
+        <circle cx="26" cy="20" r="0.9" fill="var(--color-bg)" opacity="0.7"/>
+        <circle cx="18" cy="26" r="0.9" fill="var(--color-bg)" opacity="0.7"/>
+      </svg>
+      <span class="brand-name">Crumb</span>
+    </a>
+    <nav class="nav">
+      <a class="nav-link" href="#how">How it works</a>
+      <a class="nav-link" href="#data">The data</a>
+      <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="4"/>
+          <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/>
+        </svg>
+      </button>
+    </nav>
+  </header>
+
+  <main>
+    <!-- HERO / INTRO -->
+    <section class="hero" id="hero">
+      <div class="hero-inner">
+        <span class="kicker">A failproof sourdough calculator <span class="kicker-credit">by <a href="https://www.instagram.com/vividsourdough/" target="_blank" rel="noopener">Vivid Sourdough</a></span></span>
+        <h1 class="display">Baking bread, planned around your day.</h1>
+        <p class="lede">
+          Tell Crumb how much time you actually have to handle the dough, what you want to bake, and when you want it out of the oven. We work backwards from there, choosing hydration, fold count, fermentation length and timing to maximise the chance of a beautiful loaf at the first attempt.
+        </p>
+        <div class="hero-meta">
+          <div class="meta-item">
+            <span class="meta-num">207</span>
+            <span class="meta-label">recipes analysed</span>
+          </div>
+          <div class="meta-divider"></div>
+          <div class="meta-item">
+            <span class="meta-num">92.4</span>
+            <span class="meta-label">median failproof score</span>
+          </div>
+          <div class="meta-divider"></div>
+          <div class="meta-item">
+            <span class="meta-num">7</span>
+            <span class="meta-label">bread archetypes</span>
+          </div>
+        </div>
+        <a href="#wizard" class="cta-primary">Start planning your bake →</a>
+      </div>
+    </section>
+
+    <!-- THE WIZARD -->
+    <section class="wizard" id="wizard">
+      <div class="wizard-shell">
+        <aside class="wizard-rail" aria-label="Progress">
+          <ol class="rail-steps" id="railSteps">
+            <li data-step="0"><span class="rail-dot"></span><span class="rail-text">What & when</span></li>
+            <li data-step="1"><span class="rail-dot"></span><span class="rail-text">Time & touch</span></li>
+            <li data-step="2"><span class="rail-dot"></span><span class="rail-text">Kitchen & flour</span></li>
+            <li data-step="3"><span class="rail-dot"></span><span class="rail-text">Skill & loaves</span></li>
+            <li data-step="4"><span class="rail-dot"></span><span class="rail-text">Your plan</span></li>
+          </ol>
+        </aside>
+
+        <div class="wizard-stage">
+          <!-- STEP 1: WHAT & WHEN -->
+          <div class="step is-active" data-step="0">
+            <div class="step-header">
+              <span class="step-eyebrow">Step 1 of 4</span>
+              <h2>What are you baking, and when?</h2>
+              <p class="step-sub">Start with the outcome. Everything else is calculated backwards from this.</p>
+            </div>
+
+            <div class="field">
+              <label class="field-label">What is this bread for?</label>
+              <div class="archetype-grid" role="radiogroup" id="archetypeGrid">
+                <!-- populated by JS -->
+              </div>
+            </div>
+
+            <div class="field-row">
+              <div class="field">
+                <label class="field-label" for="finishDate">Out of the oven on…</label>
+                <input class="input" type="date" id="finishDate" />
+              </div>
+              <div class="field">
+                <label class="field-label" for="finishTime">…at this time</label>
+                <input class="input" type="time" id="finishTime" value="18:00" />
+              </div>
+            </div>
+
+            <div class="field">
+              <label class="field-label">Have you already built your levain?</label>
+              <div class="levain-grid" role="radiogroup" id="levainGrid">
+                <button type="button" class="levain-card is-selected" data-value="no" role="radio" aria-checked="true">
+                  <span class="levain-icon">🕰</span>
+                  <span class="levain-title">Not yet</span>
+                  <span class="levain-detail">Plan from a fresh starter feed (~5h levain build).</span>
+                </button>
+                <button type="button" class="levain-card" data-value="yes" role="radio" aria-checked="false">
+                  <span class="levain-icon">✨</span>
+                  <span class="levain-title">Yes, it's ripe and ready</span>
+                  <span class="levain-detail">Skip the build window. Start straight from mix.</span>
+                </button>
+              </div>
+            </div>
+
+            <div class="step-actions">
+              <button class="btn-primary" data-next="1">Continue →</button>
+            </div>
+          </div>
+
+          <!-- STEP 2: TIME & TOUCH -->
+          <div class="step" data-step="1">
+            <div class="step-header">
+              <span class="step-eyebrow">Step 2 of 4</span>
+              <h2>How much time can you spend with the dough?</h2>
+              <p class="step-sub">Active time only, not waiting time. Be honest. We'll trade folds for fermentation length.</p>
+            </div>
+
+            <div class="field">
+              <label class="field-label">Active interaction budget</label>
+              <div class="budget-grid" role="radiogroup" id="budgetGrid">
+                <button type="button" class="budget-card" data-value="very_low" role="radio" aria-checked="false">
+                  <span class="budget-icon">⏱</span>
+                  <span class="budget-title">Very time-poor</span>
+                  <span class="budget-time">≤ 20 min total</span>
+                  <span class="budget-detail">No folds. Vigorous mix + long ferment.</span>
+                </button>
+                <button type="button" class="budget-card" data-value="low" role="radio" aria-checked="false">
+                  <span class="budget-icon">🤏</span>
+                  <span class="budget-title">Low touch</span>
+                  <span class="budget-time">20–30 min total</span>
+                  <span class="budget-detail">2 gentle coil folds.</span>
+                </button>
+                <button type="button" class="budget-card is-selected" data-value="standard" role="radio" aria-checked="true">
+                  <span class="budget-icon">👐</span>
+                  <span class="budget-title">Standard</span>
+                  <span class="budget-time">30–45 min total</span>
+                  <span class="budget-detail">Classic 3 folds, every 30–45 min.</span>
+                </button>
+                <button type="button" class="budget-card" data-value="high" role="radio" aria-checked="false">
+                  <span class="budget-icon">🙌</span>
+                  <span class="budget-title">High engagement</span>
+                  <span class="budget-time">45–90 min total</span>
+                  <span class="budget-detail">4 folds + slap-and-fold, autolyse, lamination.</span>
+                </button>
+              </div>
+            </div>
+
+            <div class="field">
+              <label class="field-label">
+                Quiet hours
+                <span class="field-help">When you don't want any active steps (sleep, work, dinner). Crumb will reshape the plan so no fold or shape lands in this window.</span>
+              </label>
+              <div class="quiet-row">
+                <label class="quiet-toggle">
+                  <input type="checkbox" id="quietEnabled" checked />
+                  <span>Respect my quiet hours</span>
+                </label>
+                <div class="quiet-times" id="quietTimes">
+                  <label class="quiet-time-field">
+                    <span class="quiet-time-label">From</span>
+                    <input class="input input-time" type="time" id="quietStart" value="23:00" />
+                  </label>
+                  <label class="quiet-time-field">
+                    <span class="quiet-time-label">Until</span>
+                    <input class="input input-time" type="time" id="quietEnd" value="06:00" />
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <div class="step-actions">
+              <button class="btn-secondary" data-prev>← Back</button>
+              <button class="btn-primary" data-next="2">Continue →</button>
+            </div>
+          </div>
+
+          <!-- STEP 3: KITCHEN & FLOUR -->
+          <div class="step" data-step="2">
+            <div class="step-header">
+              <span class="step-eyebrow">Step 3 of 4</span>
+              <h2>Your kitchen and your flour</h2>
+              <p class="step-sub">Temperature is the single biggest variable in fermentation timing.</p>
+            </div>
+
+            <div class="field">
+              <label class="field-label">How warm is your kitchen right now?</label>
+              <div class="temp-grid" role="radiogroup" id="tempGrid">
+                <button type="button" class="temp-card" data-value="cold" role="radio">
+                  <span class="temp-num">&lt;20°C</span>
+                  <span class="temp-label">Cold</span>
+                </button>
+                <button type="button" class="temp-card is-selected" data-value="moderate" role="radio">
+                  <span class="temp-num">20–24°C</span>
+                  <span class="temp-label">Moderate</span>
+                </button>
+                <button type="button" class="temp-card" data-value="warm" role="radio">
+                  <span class="temp-num">24–28°C</span>
+                  <span class="temp-label">Warm</span>
+                </button>
+                <button type="button" class="temp-card" data-value="hot" role="radio">
+                  <span class="temp-num">&gt;28°C</span>
+                  <span class="temp-label">Hot</span>
+                </button>
+              </div>
+            </div>
+
+            <div class="field-row">
+              <div class="field">
+                <label class="field-label" for="flourType">Main flour</label>
+                <select class="input" id="flourType">
+                  <option value="bread_flour">Bread flour (high protein)</option>
+                  <option value="ap_flour">All-purpose flour</option>
+                  <option value="type_00">Type 00 / 00 flour</option>
+                  <option value="t65">T65 / French-style</option>
+                </select>
+              </div>
+              <div class="field">
+                <label class="field-label" for="wwPct">Whole wheat blend (%)</label>
+                <input class="input" type="number" id="wwPct" min="0" max="50" value="0" step="5" />
+              </div>
+            </div>
+
+            <details class="advanced">
+              <summary>Advanced toggles</summary>
+              <div class="advanced-body">
+                <div class="field">
+                  <label class="field-label" for="customHydration">Override hydration % <span class="hint">(leave blank for recommended)</span></label>
+                  <input class="input" type="number" id="customHydration" min="55" max="95" placeholder="e.g. 75" />
+                </div>
+                <p class="advanced-note">Crumb recommends a hydration based on your archetype, skill level, and kitchen temperature. Override only if you know what you're doing. High hydration is harder to handle.</p>
+              </div>
+            </details>
+
+            <div class="step-actions">
+              <button class="btn-secondary" data-prev>← Back</button>
+              <button class="btn-primary" data-next="3">Continue →</button>
+            </div>
+          </div>
+
+          <!-- STEP 4: SKILL & LOAVES -->
+          <div class="step" data-step="3">
+            <div class="step-header">
+              <span class="step-eyebrow">Step 4 of 4</span>
+              <h2>Your skill and how many loaves</h2>
+              <p class="step-sub">We adjust hydration limits and instruction depth based on your experience.</p>
+            </div>
+
+            <div class="field">
+              <label class="field-label">Skill level</label>
+              <div class="skill-grid" role="radiogroup" id="skillGrid">
+                <button type="button" class="skill-card is-selected" data-value="beginner" role="radio">
+                  <span class="skill-title">Beginner</span>
+                  <span class="skill-detail">First few sourdough bakes, or you've had inconsistent results so far.</span>
+                </button>
+                <button type="button" class="skill-card" data-value="intermediate" role="radio">
+                  <span class="skill-title">Intermediate</span>
+                  <span class="skill-detail">Comfortable with basic technique. You've baked 10+ loaves.</span>
+                </button>
+                <button type="button" class="skill-card" data-value="advanced" role="radio">
+                  <span class="skill-title">Advanced</span>
+                  <span class="skill-detail">You read crumb shots like tea leaves. Bring on the high hydration.</span>
+                </button>
+              </div>
+            </div>
+
+            <div class="field-row">
+              <div class="field">
+                <label class="field-label" for="loaves">Number of loaves</label>
+                <input class="input" type="number" id="loaves" min="1" max="6" value="1" />
+              </div>
+              <div class="field">
+                <label class="field-label" for="doughPerLoaf">Dough weight per loaf (g)</label>
+                <input class="input" type="number" id="doughPerLoaf" min="400" max="2000" value="900" step="50" />
+              </div>
+            </div>
+
+            <div class="step-actions">
+              <button class="btn-secondary" data-prev>← Back</button>
+              <button class="btn-primary" id="generateBtn">Generate my plan ✦</button>
+            </div>
+          </div>
+
+          <!-- STEP 5: OUTPUT -->
+          <div class="step" data-step="4">
+            <div id="planOutput"><!-- populated by JS --></div>
+            <div class="step-actions">
+              <button class="btn-secondary" data-prev>← Adjust inputs</button>
+              <button class="btn-primary" id="restartBtn">Start over</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- HOW IT WORKS -->
+    <section class="how" id="how">
+      <div class="container">
+        <span class="kicker">How Crumb thinks</span>
+        <h2 class="section-title">Backwards from the loaf you want.</h2>
+        <p class="section-sub">Most recipes hand you a fixed schedule and hope it fits your day. Crumb does the opposite. It starts from your finish time and your handling budget, then works backwards to choose every variable.</p>
+
+        <div class="how-grid">
+          <div class="how-card">
+            <span class="how-num">01</span>
+            <h3>Pick a process archetype</h3>
+            <p>Sandwich, open-crumb, focaccia, pizza: each has its own hydration window, salt level, and shaping style. Your purpose dictates the dough's character.</p>
+          </div>
+          <div class="how-card">
+            <span class="how-num">02</span>
+            <h3>Match folds to your time</h3>
+            <p>Got 20 minutes? No folds. Strength comes from a vigorous initial mix. An hour? Classic 3-fold pattern. We never recommend more touch points than you can actually do.</p>
+          </div>
+          <div class="how-card">
+            <span class="how-num">03</span>
+            <h3>Set inoculation by timeline</h3>
+            <p>Short schedule = more starter (faster ferment). Long retard = less starter (controlled ferment). Picked from a regime table validated against the dataset.</p>
+          </div>
+          <div class="how-card">
+            <span class="how-num">04</span>
+            <h3>Predict bulk from temperature</h3>
+            <p>Q10 ≈ 2: every 10°C swing roughly doubles or halves fermentation rate. We compute bulk hours from your dough temperature and inoculation, not from a fixed timer.</p>
+          </div>
+          <div class="how-card">
+            <span class="how-num">05</span>
+            <h3>Stay in the failproof zone</h3>
+            <p>The 207-recipe analysis shows scores drop sharply above 75% hydration and below 65°F bulk temp. We cap and adjust based on your skill.</p>
+          </div>
+          <div class="how-card">
+            <span class="how-num">06</span>
+            <h3>Render a real schedule</h3>
+            <p>Timestamped touch-points fitted to your day. Every step is labelled active or passive, with sensory cues so you know what to look for.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- DATA SECTION -->
+    <section class="data" id="data">
+      <div class="container">
+        <span class="kicker">The dataset</span>
+        <h2 class="section-title">207 recipes. One pattern.</h2>
+        <p class="section-sub">Every assumption in Crumb is calibrated against a dataset of 207 sourdough recipes from publicly available YouTube creators, food blogs, cookbooks, and community forums; each scored by sentiment analysis on user comments.</p>
+
+        <div class="data-grid">
+          <div class="data-card">
+            <div class="data-stat">69%</div>
+            <div class="data-label">Optimal hydration</div>
+            <div class="data-detail">Average for recipes scoring 90+. Scores drop sharply above 75%.</div>
+          </div>
+          <div class="data-card">
+            <div class="data-stat">20%</div>
+            <div class="data-label">Optimal inoculation</div>
+            <div class="data-detail">Sweet spot for a 22–24h schedule at room temperature.</div>
+          </div>
+          <div class="data-card">
+            <div class="data-stat">5.5 hrs</div>
+            <div class="data-label">Optimal bulk ferment</div>
+            <div class="data-detail">At ~23°C/73°F. Cooler kitchens are more forgiving than hot ones.</div>
+          </div>
+          <div class="data-card">
+            <div class="data-stat">12–14 hrs</div>
+            <div class="data-label">Optimal cold retard</div>
+            <div class="data-detail">Builds flavor, makes scoring easier, gives you scheduling flexibility.</div>
+          </div>
+          <div class="data-card">
+            <div class="data-stat">93.0</div>
+            <div class="data-label">Beginner-recipe score</div>
+            <div class="data-detail">Simpler recipes (≤20 min active time) outperform advanced ones (76.7).</div>
+          </div>
+          <div class="data-card">
+            <div class="data-stat">2.0%</div>
+            <div class="data-label">Standard salt</div>
+            <div class="data-detail">Universal across the dataset. Crumb sticks with this.</div>
+          </div>
+        </div>
+
+        <p class="data-source">Sourced from various publicly available recipes and methods: <a href="https://www.theperfectloaf.com/best-sourdough-recipe/">The Perfect Loaf</a>, <a href="https://www.youtube.com/watch?v=jJpIzr2sCDE">Joshua Weissman</a>, <a href="https://www.bakewithjack.co.uk/">Bake with Jack</a>, <a href="https://tartinebakery.com/stories/country-bread">Tartine</a>, <a href="https://www.kingarthurbaking.com/">King Arthur Baking</a>, <a href="https://www.youtube.com/watch?v=NMglhwp2lNs">The Bread Code</a>, <a href="https://www.brianlagerstrom.com/recipes/easiest-sourdough">Brian Lagerstrom</a>, <a href="https://foodbodsourdough.com/">Foodbod</a>, <a href="https://pantrymama.com/">Pantry Mama</a>, <a href="https://www.farmhouseonboone.com/">Farmhouse on Boone</a>, Reddit r/Sourdough, The Fresh Loaf forums, and 200+ more.</p>
+        <p class="data-source built-with-love">Built with love for baking by <a href="https://www.instagram.com/vividsourdough/" target="_blank" rel="noopener">Vivid Sourdough</a></p>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <div class="container">
+        <div class="footer-row">
+          <span class="footer-brand">Crumb · A failproof sourdough calculator by <a href="https://www.instagram.com/vividsourdough/" target="_blank" rel="noopener">Vivid Sourdough</a></span>
+          <span class="footer-meta">Built on a 207-recipe analysis · <a href="METHODOLOGY.md">Open methodology</a></span>
+        </div>
+      </div>
+    </footer>
+  </main>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>
