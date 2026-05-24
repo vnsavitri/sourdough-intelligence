@@ -107,4 +107,4 @@ MIT
 
 ---
 
-Built with love for baking by [Vivid Sourdough](https://vividcrumb.netlify.app)
+Built with love for baking by [Vivid Sourdough](https://www.instagram.com/vividsourdough/)
